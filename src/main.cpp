@@ -16,7 +16,7 @@ int saveWrongConnections[9][2] = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0
 
 int openPort = false; // do something when the sollution is made 
 
-const String countries[8] = {"frankrijk","duitsland","nederland","belgie","engeland","italie","spanje","zweden"};
+const String countries[8] = {"Flame 2 Swan 16","Flame 18 Rabbit 14","Tempest 12 Swan 24","Tempest 21 Orchid 5","Hydra 6 Arrow 11","Hydra 23 Rabbit 4","Lamppost 7 Orchid 17","Lampost 22 Arrow 19"};
 
 void puzzleStart()
 {
