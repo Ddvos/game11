@@ -1,6 +1,5 @@
 # Flight 815 - Puzzle 11 stationconnection
 
-# Algemene info spel
 Het doel van dit spel is de juiste 8 combinaties te maken door door met kabels 2 stationen met elkaar te verbinden.
 Zodra deze 8 combinaties zijn gemaakt schakeld het relay de deur open om naar de volgende ruimte te gaan. Totaal zijn er 200 opties,
 waarvan er 16 zijn aangesloten op de Arduino Mega met Ethernet Shield.
