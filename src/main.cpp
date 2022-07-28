@@ -7,7 +7,7 @@ byte mac[] = {0xF0, 0xCA, 0xCC, 0x1A, 0x00, 0x07}; //0xDE, 0xED, 0xBA, 0xFE, 0xF
 IPAddress server(192, 168, 0, 100); //192,168,11,101
 
 #define RELAY_PIN 7
-int cablepins[] = { 22, 23, 24, 25, 28, 29, 32,33,36,37,40,41,44,45,48,49,6};
+int cablepins[] = { 22, 23, 24, 25, 28, 29, 32,33,36,37,40,41,44,45,48,49,50};
 
 const int solution[9][2] = {{0,8},{1,9},{2,10},{3,11},{4,12},{5,13},{6,14},{7,15},{16,16}}; // all wright connection
 int connections[9] = {false,false,false,false,false,false,false,false,false}; // keep track of good connections
@@ -65,6 +65,7 @@ void puzzleLoop() {
 
                      connections[s]= true;                                           
               }
+              //wrong connection is made
               if(((solution[s][0] == p || solution[s][1] ==  p)&&( saveWrongConnections[s][0]== 0 && saveWrongConnections[s][1]== 0))&& connections[s] == false ){
    
                      Serial.print( "wrong connection: ");
@@ -77,7 +78,7 @@ void puzzleLoop() {
               }
             }
         }
-        if(digitalRead(cablepins[p])== HIGH && p != checkingPin){ //wright connection is diconnected
+        if(digitalRead(cablepins[p])== HIGH && p != checkingPin){ //wright connection is disconnected
            for(int s =0; s<9; s++ ){// check if connection is in sollution  array
              if(solution[s][0] == checkingPin && solution[s][1] ==  p && connections[s] == true){
                   Serial.println("Good connection lost");
@@ -85,7 +86,7 @@ void puzzleLoop() {
                    totalGoodConnections--;
                    connections[s]= false;    
              } 
-               if(saveWrongConnections[s][0] == checkingPin && saveWrongConnections[s][1] == p  ){
+               if(saveWrongConnections[s][0] == checkingPin && saveWrongConnections[s][1] == p  ){ // wrong connection is disconneted
                   Serial.print( "[END] wrong connection: ");
                   Serial.print( checkingPin);  
                   Serial.print( " and ");
