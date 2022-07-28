@@ -3,11 +3,11 @@
 
 #define DEVICE_NAME "puzzle11-stationconnection"
 
-byte mac[] = {0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED};
-IPAddress server(192,168,11,101);
+byte mac[] = {0xF0, 0xCA, 0xCC, 0x1A, 0x00, 0x07}; //0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED
+IPAddress server(192, 168, 0, 100); //192,168,11,101
 
-#define RELAY_PIN 49
-int cablepins[] = { 22, 23, 24, 25, 28, 29, 32,33,36,37,40,41,44,45,48,49,50};
+#define RELAY_PIN 7
+int cablepins[] = { 22, 23, 24, 25, 28, 29, 32,33,36,37,40,41,44,45,48,49,6};
 
 const int solution[9][2] = {{0,8},{1,9},{2,10},{3,11},{4,12},{5,13},{6,14},{7,15},{16,16}}; // all wright connection
 int connections[9] = {false,false,false,false,false,false,false,false,false}; // keep track of good connections
@@ -16,12 +16,18 @@ int saveWrongConnections[9][2] = {{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0
 
 int openPort = false; // do something when the sollution is made 
 
-const String countries[8] = {"Flame 2 Swan 16","Flame 18 Rabbit 14","Tempest 12 Swan 24","Tempest 21 Orchid 5","Hydra 6 Arrow 11","Hydra 23 Rabbit 4","Lamppost 7 Orchid 17","Lampost 22 Arrow 19"};
+const String countries[8] = {"Cable1","Cable3","Cable4","Cable5","Cable6","Cable7","Cable2","Cable8"};
 
 void puzzleStart()
 {
     pinMode(A2, INPUT_PULLUP);
     Serial.print("Start game");
+}
+
+void setRelay(bool isOn)
+{
+  // if (isOn) {Serial.println("Relay is on");} else Serial.println("Relay is off");
+  digitalWrite(RELAY_PIN, isOn ? HIGH : LOW);
 }
 
 
@@ -51,9 +57,10 @@ void puzzleLoop() {
 
                      totalGoodConnections++;
 
-                     if(totalGoodConnections == 3){
+                     if(totalGoodConnections == 8){
                       EscapeLogicClient::sendPuzzleFinished();
                       Serial.println("!!! Game is won !!!");
+                      setRelay(false); // open!
                      }
 
                      connections[s]= true;                                           
@@ -101,21 +108,55 @@ void puzzleLoop() {
 void puzzleSolved()
 {
   Serial.println("Puzzle Doneeee");
+  setRelay(false); 
+  
+  totalGoodConnections=0;
+
+  for(int i = 0; i < 9; i++) {//reset good connections
+    connections[i] = false;
+  }
+  
+  for(int i = 0; i < 9; i++){ // reset wrong connections
+    saveWrongConnections[9][0]= 0;
+    saveWrongConnections[9][1]=0;
+  }
+}
+
+void resetEverything()
+{
+  Serial.println("Reset Everything");
+  setRelay(false); // open!
+  delay(2000);
+  setRelay(true); // standaard dicht
+
+  totalGoodConnections=0;
+
+  for(int i = 0; i < 9; i++) {
+    connections[i] = false;
+  }
+
+  for(int i = 0; i < 9; i++){
+    saveWrongConnections[9][0]= 0;
+    saveWrongConnections[9][1]=0;
+  }
+
 }
 
   void setup()
   {
-    // put your setup code here, to run once:
+    pinMode(7, OUTPUT);
     pinMode(RELAY_PIN, OUTPUT);
+    setRelay(true); // standaard dicht
 
     for(int i = 0; i < 17; i++) { 
       pinMode(cablepins[i], INPUT_PULLUP);
     }
 
     Serial.begin(115200);
-    EscapeLogicClient::start(mac, server, "pottenpuzzel");
+    EscapeLogicClient::start(mac, server, "puzzle11-stationconnection");
     EscapeLogicClient::setOnPuzzleStart(puzzleStart);
     EscapeLogicClient::setPuzzleLoop(puzzleLoop);
+    EscapeLogicClient::setOnReset(resetEverything);
     EscapeLogicClient::setOnPuzzleSolved(puzzleSolved);
 
    
